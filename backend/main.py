@@ -47,3 +47,27 @@ async def get_drivers():
 
     except Exception as e:
         return {"error": f"Falló la llamada a OpenF1: {str(e)}"}
+
+@app.get("/api/driver/{number}")
+async def get_driver(number: str):
+    try:
+        url = "https://api.openf1.org/v1/drivers"
+        async with httpx.AsyncClient() as client:
+            response = await client.get(url)
+            response.raise_for_status()
+
+        data = response.json()
+
+        for driver in data:
+            if str(driver.get("driver_number")) == number:
+                return {
+                    "full_name": driver.get("full_name"),
+                    "team": driver.get("team_name"),
+                    "country": driver.get("country_code"),
+                    "number": driver.get("driver_number"),
+                }
+
+        return {"error": "Driver not found"}
+
+    except Exception as e:
+        return {"error": f"Error fetching driver: {str(e)}"}
