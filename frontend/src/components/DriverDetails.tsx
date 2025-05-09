@@ -60,6 +60,15 @@ export default function DriverDetails() {
         <div className="min-h-screen bg-gray-100 p-6">
             <h1 className="text-4xl font-bold text-center mb-10 text-red-600">Driver Details</h1>
             <div className="max-w-xl mx-auto bg-white p-6 rounded-xl shadow">
+                <img
+                    src={driver.headshot_url || 'https://media.formula1.com/d_driver_fallback_image.png/content/'}
+                    onError={(e) => {
+                        e.currentTarget.src = 'https://media.formula1.com/d_driver_fallback_image.png/content/';
+                    }}
+                    alt={driver.full_name}
+                    className="w-48 h-48 object-cover rounded-full mx-auto mb-6 shadow"
+                />
+
                 <p className="text-xl mb-2">👤 <strong>Name:</strong> {driver.full_name}</p>
                 <p className="text-xl mb-2">🏳️ <strong>Country:</strong> {driver.country}</p>
                 <p className="text-xl mb-2">🏎️ <strong>Team:</strong> {driver.team}</p>
