@@ -1,115 +1,107 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Query
 from fastapi.middleware.cors import CORSMiddleware
 import httpx
 import unidecode
-import re
 
 app = FastAPI()
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # Cambia esto en producción
+    allow_origins=["http://localhost:5173"],  # Cambiar para producción
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-@app.get("/api/drivers")
-async def get_drivers():
-    try:
-        session_key = 9583  # Ejemplo: GP Japón 2024 Carrera (actualízalo según necesites)
-        url = "https://api.openf1.org/v1/drivers"
-        params = {"session_key": session_key}
+BASE_URL = "https://api.openf1.org/v1"
 
-        async with httpx.AsyncClient() as client:
-            response = await client.get(url, params=params)
-            response.raise_for_status()
-
-        data = response.json()
-
-        if not isinstance(data, list):
-            return {"error": "Respuesta inesperada de la API externa"}
-
-        drivers = {}
-        for driver in data:
-            number = driver.get("driver_number")
-            name = driver.get("full_name")
-            team = driver.get("team_name")
-            country = driver.get("country_code")
-            headshot = driver.get("headshot_url")
-
-            if not name or not number:
-                continue
-
-            unique_key = f"{number}-{name}"
-            if unique_key in drivers:
-                continue
-
-            # Mejora la calidad de imagen
-            if headshot and isinstance(headshot, str) and "/1col/" in headshot:
-                headshot = headshot.replace("/1col/", "/3col/")
-            elif not headshot or not headshot.startswith("http"):
-                headshot = generate_f1_headshot_url(name)
-
-            drivers[unique_key] = {
-                "full_name": name,
-                "team": team or "Unknown",
-                "country": country or "Unknown",
-                "number": str(number),
-                "headshot_url": headshot
-            }
-
-        return list(drivers.values())
-
-    except Exception as e:
-        return {"error": f"Falló la llamada a OpenF1: {str(e)}"}
-
-@app.get("/api/driver/{number}")
-async def get_driver(number: str):
-    try:
-        url = "https://api.openf1.org/v1/drivers"
-        async with httpx.AsyncClient() as client:
-            response = await client.get(url)
-            response.raise_for_status()
-
-        data = response.json()
-
-        for driver in data:
-            if str(driver.get("driver_number")) == number:
-                return {
-                    "full_name": driver.get("full_name"),
-                    "team": driver.get("team_name"),
-                    "country": driver.get("country_code"),
-                    "number": driver.get("driver_number"),
-                }
-
-        return {"error": "Driver not found"}
-
-    except Exception as e:
-        return {"error": f"Error fetching driver: {str(e)}"}
+# --------------------- 🔧 UTILITY ---------------------
 
 def generate_f1_headshot_url(full_name: str) -> str:
     name = unidecode.unidecode(full_name)
-
     parts = name.strip().split()
 
+    if len(parts) < 2:
+        return None
 
     first = parts[0]
-    if len(parts) > 2:
-        middle = parts[1]
     last = parts[-1]
+    middle = parts[1] if len(parts) > 2 else ""
 
-    code = (
-            first[:3].upper() +
-            last[:3].upper() +
-            "01"
-    )
-
-    safe_name = first + "_" + last
-    if len(parts) > 2:
-        safe_name = first + " " + middle + "_" + last
-
+    code = (first[:3] + last[:3] + "01").upper()
+    safe_name = first + "_" + last if not middle else f"{first} {middle}_{last}"
     firstletter = safe_name[0].upper()
 
     return f"https://www.formula1.com/content/dam/fom-website/drivers/{firstletter}/{code}_{safe_name}/{code.lower()}.png.transform/3col/image.png"
 
+# --------------------- ✅ API ENDPOINTS ---------------------
+
+@app.get("/api/sessions")
+async def get_sessions(year: int = Query(..., description="e.g. 2024")):
+    async with httpx.AsyncClient() as client:
+        response = await client.get(f"{BASE_URL}/sessions", params={"year": year, "session_type": "Race"})
+        response.raise_for_status()
+        return response.json()
+
+@app.get("/api/drivers")
+async def get_drivers(session_key: int = Query(...)):
+    async with httpx.AsyncClient() as client:
+        response = await client.get(f"{BASE_URL}/drivers", params={"session_key": session_key})
+        response.raise_for_status()
+        data = response.json()
+
+    drivers = {}
+    for d in data:
+        number = d.get("driver_number")
+        name = d.get("full_name")
+        if not name or not number:
+            continue
+
+        key = f"{number}-{name}"
+        if key in drivers:
+            continue
+
+        headshot = d.get("headshot_url")
+        if headshot and "/1col/" in headshot:
+            headshot = headshot.replace("/1col/", "/3col/")
+        elif not headshot or not headshot.startswith("http"):
+            headshot = generate_f1_headshot_url(name)
+
+        drivers[key] = {
+            "full_name": name,
+            "team": d.get("team_name") or "Unknown",
+            "country": d.get("country_code") or "Unknown",
+            "number": str(number),
+            "headshot_url": headshot
+        }
+
+    return list(drivers.values())
+
+@app.get("/api/driver/{number}")
+async def get_driver(number: str):
+    async with httpx.AsyncClient() as client:
+        response = await client.get(f"{BASE_URL}/drivers")
+        response.raise_for_status()
+        data = response.json()
+
+    for d in data:
+        if str(d.get("driver_number")) == number:
+            return {
+                "full_name": d.get("full_name"),
+                "team": d.get("team_name"),
+                "country": d.get("country_code"),
+                "number": d.get("driver_number"),
+                "headshot_url": d.get("headshot_url") or generate_f1_headshot_url(d.get("full_name"))
+            }
+
+    return {"error": "Driver not found"}
+
+@app.get("/api/laps")
+async def get_laps(driver_number: str, session_key: int):
+    async with httpx.AsyncClient() as client:
+        response = await client.get(f"{BASE_URL}/lap_times", params={
+            "driver_number": driver_number,
+            "session_key": session_key
+        })
+        response.raise_for_status()
+        return response.json()
