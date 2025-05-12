@@ -17,7 +17,7 @@ export default function App() {
                         path="/"
                         element={
                             <>
-                                <SeasonSelector year={2024} onChange={setSessionKey} />
+                                <SeasonSelector year={2025} onChange={setSessionKey} />
                                 {sessionKey && <DriversList sessionKey={sessionKey} />}
                             </>
                         }
