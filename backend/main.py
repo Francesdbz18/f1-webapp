@@ -37,11 +37,21 @@ def generate_f1_headshot_url(full_name: str) -> str:
 # --------------------- ✅ API ENDPOINTS ---------------------
 
 @app.get("/api/sessions")
-async def get_sessions(year: int = Query(..., description="e.g. 2024")):
+async def get_sessions(year: int):
     async with httpx.AsyncClient() as client:
         response = await client.get(f"{BASE_URL}/sessions", params={"year": year, "session_type": "Race"})
         response.raise_for_status()
-        return response.json()
+
+    data = response.json()
+    return [
+        {
+            "session_key": s["session_key"],
+            "label": f"{s['country_name']} - {s['circuit_short_name']} - {s['session_name']}",
+            "date": s["date_start"][:10]
+        }
+        for s in data
+    ]
+
 
 @app.get("/api/drivers")
 async def get_drivers(session_key: int = Query(...)):
@@ -61,10 +71,10 @@ async def get_drivers(session_key: int = Query(...)):
         if key in drivers:
             continue
 
-        headshot = d.get("headshot_url")
-        if headshot and "/1col/" in headshot:
+        headshot = d.get("headshot_url") or ""
+        if "/1col/" in headshot:
             headshot = headshot.replace("/1col/", "/3col/")
-        elif not headshot or not headshot.startswith("http"):
+        if not headshot or not headshot.startswith("http") or not headshot.endswith("3col/image.png"):
             headshot = generate_f1_headshot_url(name)
 
         drivers[key] = {
@@ -72,29 +82,11 @@ async def get_drivers(session_key: int = Query(...)):
             "team": d.get("team_name") or "Unknown",
             "country": d.get("country_code") or "Unknown",
             "number": str(number),
-            "headshot_url": headshot
+            "headshot_url": headshot,
+            "team_colour": "#" + d.get("team_colour") or "#555555"
         }
 
     return list(drivers.values())
-
-@app.get("/api/driver/{number}")
-async def get_driver(number: str):
-    async with httpx.AsyncClient() as client:
-        response = await client.get(f"{BASE_URL}/drivers")
-        response.raise_for_status()
-        data = response.json()
-
-    for d in data:
-        if str(d.get("driver_number")) == number:
-            return {
-                "full_name": d.get("full_name"),
-                "team": d.get("team_name"),
-                "country": d.get("country_code"),
-                "number": d.get("driver_number"),
-                "headshot_url": d.get("headshot_url") or generate_f1_headshot_url(d.get("full_name"))
-            }
-
-    return {"error": "Driver not found"}
 
 @app.get("/api/laps")
 async def get_laps(driver_number: str, session_key: int):

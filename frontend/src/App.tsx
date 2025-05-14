@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import SeasonSelector from './components/SeasonSelector';
+import YearSelector from './components/YearSelector';
 import DriversList from './components/DriversList';
 import DriverDetails from './components/DriverDetails';
 
 export default function App() {
     const [sessionKey, setSessionKey] = useState<number | null>(null);
+    const [year, setYear] = useState<number>(2024);
 
     return (
         <BrowserRouter>
@@ -17,7 +19,8 @@ export default function App() {
                         path="/"
                         element={
                             <>
-                                <SeasonSelector year={2025} onChange={setSessionKey} />
+                                <YearSelector selectedYear={year} onChange={setYear} />
+                                <SeasonSelector year={year} onChange={setSessionKey} />
                                 {sessionKey && <DriversList sessionKey={sessionKey} />}
                             </>
                         }

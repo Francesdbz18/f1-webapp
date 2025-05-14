@@ -17,19 +17,42 @@ type Props = {
     sessionKey: number;
 };
 
-export default function DriverStats({ driverNumber, sessionKey }: Props) {
+function parseLapTime(time: string | null): number | null {
+    if (!time || typeof time !== 'string') return null;
+
+    const parts = time.split(':');
+    if (parts.length === 2) {
+        const minutes = parseFloat(parts[0]);
+        const seconds = parseFloat(parts[1]);
+        return minutes * 60 + seconds;
+    }
+
+    const sec = parseFloat(time);
+    return isNaN(sec) ? null : sec;
+}
+
+
+export default function DriverStats({ driverNumber, sessionKey }: Readonly<Props>) {
     const [lapData, setLapData] = useState<number[]>([]);
 
     useEffect(() => {
         axios.get(`http://localhost:8000/api/laps`, {
             params: { driver_number: driverNumber, session_key: sessionKey }
         }).then(res => {
-            const times = res.data.map((lap: any) => lap.lap_time).filter(Boolean);
+            console.log('📊 Vueltas recibidas:', res.data); // DEBUG
+            const times = res.data
+                .map((lap: any) => parseLapTime(lap.lap_time))
+                .filter((t: number | null): t is number => t !== null);
+
             setLapData(times);
         });
+
     }, [driverNumber, sessionKey]);
 
-    if (lapData.length === 0) return null;
+    if (lapData.length === 0) {
+        return <p className="text-center text-sm italic mt-4">No hay datos de vueltas disponibles.</p>;
+    }
+
 
     return (
         <div className="mt-6">

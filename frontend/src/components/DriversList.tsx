@@ -9,6 +9,7 @@ type Driver = {
   team: string;
   country: string;
   headshot_url: string;
+  team_colour: string;
 };
 
 type Props = {
@@ -26,9 +27,13 @@ export default function DriversList({ sessionKey }: Readonly<Props>) {
   return (
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
         {drivers.map(driver => (
-            <Link to={`/driver/${driver.number}`} key={driver.number}>
-              <div className="p-6 bg-white rounded-xl shadow hover:shadow-lg transition">
-                <img
+            <Link to={`/driver/${driver.number}?session_key=${sessionKey}`}>
+              <div
+                style={{ backgroundColor: driver.team_colour }}
+                className="p-6 rounded-xl shadow text-white hover:shadow-lg transition"
+            >
+
+            <img
                     src={driver.headshot_url}
                     alt={driver.full_name}
                     className="w-24 h-24 rounded-full mx-auto mb-4 object-cover"
