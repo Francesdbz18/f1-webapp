@@ -1,49 +1,53 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
+import { teamLogos } from './teamLogos';
 
 type Driver = {
   full_name: string;
-  country: string;
-  team: string;
   number: string;
+  team: string;
+  country: string;
+  headshot_url: string;
+  team_colour: string;
 };
 
-const teamColors: { [team: string]: string } = {
-  'Red Bull Racing': 'bg-blue-950',
-  'Mercedes': 'bg-slate-400',
-  'Ferrari': 'bg-red-600',
-  'McLaren': 'bg-orange-500',
-  'Aston Martin': 'bg-green-700',
-  'Alpine': 'bg-indigo-600',
-  'RB': 'bg-blue-700',
-  'Kick Sauber': 'bg-lime-400',
-  'Williams': 'bg-blue-600',
-  'Haas F1 Team': 'bg-slate-950',
+type Props = {
+  sessionKey: number;
 };
 
-export default function DriversList() {
+export default function DriversList({ sessionKey }: Readonly<Props>) {
   const [drivers, setDrivers] = useState<Driver[]>([]);
 
   useEffect(() => {
-    axios.get('http://localhost:8000/api/drivers')
-        .then(res => setDrivers(res.data))
-        .catch(err => console.error(err));
-  }, []);
+    axios.get(`http://localhost:8000/api/drivers?session_key=${sessionKey}`)
+        .then(res => setDrivers(res.data));
+  }, [sessionKey]);
 
   return (
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-        {drivers.map((driver, index) => (
-            <Link to={`/driver/${driver.number}`} key={driver.number}>
+        {drivers.map(driver => (
+            <Link to={`/driver/${driver.number}?session_key=${sessionKey}`}>
               <div
-                  className={`p-6 rounded-xl shadow-lg text-white ${
-                      teamColors[driver.team] || 'bg-gray-500'
-                  }`}
-              >
-                <div className="text-sm opacity-80 mb-1">#{driver.number}</div>
-                <h2 className="text-xl font-bold">{driver.full_name}</h2>
-                <p className="text-sm"> {driver.country}</p>
-                <p className="text-sm italic">{driver.team}</p>
+                style={{ backgroundColor: driver.team_colour }}
+                className="p-6 rounded-xl shadow text-white hover:shadow-lg transition"
+            >
+
+            <img
+                    src={driver.headshot_url}
+                    alt={driver.full_name}
+                    className="w-24 h-24 rounded-full mx-auto mb-4 object-cover"
+                />
+                <h2 className="text-center font-bold text-xl">{driver.full_name}</h2>
+                <p className="text-center text-sm">{driver.country}</p>
+                <p className="text-center text-sm italic">{driver.team}</p>
+                {teamLogos[driver.team] && (
+                    <img
+                        src={teamLogos[driver.team]}
+                        alt={`${driver.team}`}
+                        className="h-8 mx-auto mt-2"
+                    />
+                )}
               </div>
             </Link>
         ))}
