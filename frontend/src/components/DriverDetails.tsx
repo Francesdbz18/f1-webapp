@@ -1,19 +1,14 @@
-import React, { useEffect, useState } from 'react';
-import { useParams, useNavigate, useLocation } from 'react-router-dom';
+import React, {useEffect, useState} from 'react';
+import {useLocation, useNavigate, useParams} from 'react-router-dom';
 import axios from 'axios';
 import DriverStats from './DriverStats';
 
 type Driver = {
-    full_name: string;
-    country: string;
-    team: string;
-    number: string;
-    headshot_url: string;
-    team_colour: string;
+    full_name: string; country: string; team: string; number: string; headshot_url: string; team_colour: string;
 };
 
 export default function DriverDetails() {
-    const { number } = useParams();
+    const {number} = useParams();
     const location = useLocation();
     const query = new URLSearchParams(location.search);
     const sessionKey = Number(query.get("session_key"));
@@ -38,8 +33,7 @@ export default function DriverDetails() {
     }
 
     if (!driver) {
-        return (
-            <div className="text-center text-red-600">
+        return (<div className="text-center text-red-600">
                 <p className="text-lg font-semibold">Piloto no encontrado en esta sesión.</p>
                 <button
                     onClick={() => navigate('/')}
@@ -47,28 +41,24 @@ export default function DriverDetails() {
                 >
                     ← Volver
                 </button>
-            </div>
-        );
+            </div>);
     }
 
-    return (
-        <div
+    return (<div
             className="max-w-xl mx-auto p-6 rounded-xl shadow text-white"
-            style={{ backgroundColor: driver.team_colour }}
+            style={{backgroundColor: driver.team_colour}}
         >
             <img
                 src={driver.headshot_url}
                 alt={driver.full_name}
-                onError={(e) =>
-                    (e.currentTarget.src = 'https://media.formula1.com/d_driver_fallback_image.png')
-                }
+                onError={(e) => (e.currentTarget.src = 'https://media.formula1.com/d_driver_fallback_image.png')}
                 className="w-40 h-40 object-cover rounded-full mx-auto mb-4 border-4 border-white"
             />
             <h2 className="text-center text-2xl font-bold">{driver.full_name}</h2>
             <p className="text-center text-sm">{driver.country}</p>
             <p className="text-center text-sm italic">{driver.team}</p>
 
-            <DriverStats driverNumber={driver.number} sessionKey={sessionKey} />
+            <DriverStats driverNumber={driver.number} sessionKey={sessionKey}/>
 
             <button
                 onClick={() => navigate('/')}
@@ -76,6 +66,5 @@ export default function DriverDetails() {
             >
                 ← Volver
             </button>
-        </div>
-    );
+        </div>);
 }

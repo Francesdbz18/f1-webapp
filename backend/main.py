@@ -1,19 +1,15 @@
-from fastapi import FastAPI, Query
-from fastapi.middleware.cors import CORSMiddleware
 import httpx
 import unidecode
+from fastapi import FastAPI, Query
+from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI()
 
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["http://localhost:5173"],
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
+app.add_middleware(CORSMiddleware, allow_origins=["http://localhost:5173"], allow_credentials=True, allow_methods=["*"],
+    allow_headers=["*"], )
 
 BASE_URL = "https://api.openf1.org/v1"
+
 
 def generate_f1_headshot_url(full_name: str) -> str:
     name = unidecode.unidecode(full_name)
@@ -32,6 +28,7 @@ def generate_f1_headshot_url(full_name: str) -> str:
 
     return f"https://www.formula1.com/content/dam/fom-website/drivers/{firstletter}/{code}_{safe_name}/{code.lower()}.png.transform/3col/image.png"
 
+
 @app.get("/api/sessions")
 async def get_sessions(year: int):
     async with httpx.AsyncClient() as client:
@@ -39,14 +36,9 @@ async def get_sessions(year: int):
         response.raise_for_status()
 
     data = response.json()
-    return [
-        {
-            "session_key": s["session_key"],
-            "label": f"{s['country_name']} - {s['circuit_short_name']} - {s['session_name']}",
-            "date": s["date_start"][:10]
-        }
-        for s in data
-    ]
+    return [{"session_key": s["session_key"],
+        "label": f"{s['country_name']} - {s['circuit_short_name']} - {s['session_name']}", "date": s["date_start"][:10]}
+        for s in data]
 
 
 @app.get("/api/drivers")
@@ -73,23 +65,17 @@ async def get_drivers(session_key: int = Query(...)):
         if not headshot or not headshot.startswith("http") or not headshot.endswith("3col/image.png"):
             headshot = generate_f1_headshot_url(name)
 
-        drivers[key] = {
-            "full_name": name,
-            "team": d.get("team_name") or "Unknown",
-            "country": d.get("country_code") or "Unknown",
-            "number": str(number),
-            "headshot_url": headshot,
-            "team_colour": "#" + (d.get("team_colour") or "555555"),
-        }
+        drivers[key] = {"full_name": name, "team": d.get("team_name") or "Unknown",
+            "country": d.get("country_code") or "Unknown", "number": str(number), "headshot_url": headshot,
+            "team_colour": "#" + (d.get("team_colour") or "555555"), }
 
     return list(drivers.values())
+
 
 @app.get("/api/laps")
 async def get_laps(driver_number: str, session_key: int):
     async with httpx.AsyncClient() as client:
-        response = await client.get(
-            f"{BASE_URL}/laps",
-            params={"driver_number": driver_number, "session_key": session_key}
-        )
+        response = await client.get(f"{BASE_URL}/laps",
+            params={"driver_number": driver_number, "session_key": session_key})
         response.raise_for_status()
         return response.json()
