@@ -87,9 +87,9 @@ async def get_drivers(session_key: int = Query(...)):
 @app.get("/api/laps")
 async def get_laps(driver_number: str, session_key: int):
     async with httpx.AsyncClient() as client:
-        response = await client.get(f"{BASE_URL}/lap_times", params={
-            "driver_number": driver_number,
-            "session_key": session_key
-        })
+        response = await client.get(
+            f"{BASE_URL}/laps",
+            params={"driver_number": driver_number, "session_key": session_key}
+        )
         response.raise_for_status()
         return response.json()

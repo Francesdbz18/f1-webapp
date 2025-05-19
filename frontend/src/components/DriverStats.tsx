@@ -39,15 +39,16 @@ export default function DriverStats({ driverNumber, sessionKey }: Readonly<Props
         axios.get(`http://localhost:8000/api/laps`, {
             params: { driver_number: driverNumber, session_key: sessionKey }
         }).then(res => {
-            console.log('📊 Vueltas recibidas:', res.data); // DEBUG
+            console.log("📊 Vueltas recibidas:", res.data);
             const times = res.data
-                .map((lap: any) => parseLapTime(lap.lap_time))
-                .filter((t: number | null): t is number => t !== null);
-
+                .map((lap: any) => lap.lap_duration)
+                .filter((t: number | null): t is number => typeof t === 'number' && t > 0);
             setLapData(times);
+        }).catch(err => {
+            console.error("❌ Error al obtener vueltas:", err);
         });
-
     }, [driverNumber, sessionKey]);
+
 
     if (lapData.length === 0) {
         return <p className="text-center text-sm italic mt-4">No hay datos de vueltas disponibles.</p>;
