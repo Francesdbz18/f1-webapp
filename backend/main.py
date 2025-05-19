@@ -66,7 +66,7 @@ async def get_drivers(session_key: int = Query(...)):
             headshot = generate_f1_headshot_url(name)
 
         drivers[key] = {"full_name": name, "team": d.get("team_name") or "Unknown",
-            "country": d.get("country_code") or "Unknown", "number": str(number), "headshot_url": headshot,
+            "country": d.get("country_code") or "", "number": str(number), "headshot_url": headshot,
             "team_colour": "#" + (d.get("team_colour") or "555555"), }
 
     return list(drivers.values())
