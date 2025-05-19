@@ -6,7 +6,7 @@ type Props = {
 };
 
 export default function YearSelector({ selectedYear, onChange }: Props) {
-    const years = [2024, 2023, 2022]; // Puedes añadir más si quieres
+    const years = [2025, 2024, 2023];
 
     return (
         <div className="text-center mb-4">

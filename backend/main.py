@@ -7,7 +7,7 @@ app = FastAPI()
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173"],  # Cambiar para producción
+    allow_origins=["http://localhost:5173"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -15,14 +15,12 @@ app.add_middleware(
 
 BASE_URL = "https://api.openf1.org/v1"
 
-# --------------------- 🔧 UTILITY ---------------------
-
 def generate_f1_headshot_url(full_name: str) -> str:
     name = unidecode.unidecode(full_name)
     parts = name.strip().split()
 
     if len(parts) < 2:
-        return None
+        return "https://media.formula1.com/d_driver_fallback_image.png/content/dam/fom-website/drivers"
 
     first = parts[0]
     last = parts[-1]
@@ -33,8 +31,6 @@ def generate_f1_headshot_url(full_name: str) -> str:
     firstletter = safe_name[0].upper()
 
     return f"https://www.formula1.com/content/dam/fom-website/drivers/{firstletter}/{code}_{safe_name}/{code.lower()}.png.transform/3col/image.png"
-
-# --------------------- ✅ API ENDPOINTS ---------------------
 
 @app.get("/api/sessions")
 async def get_sessions(year: int):
@@ -83,7 +79,7 @@ async def get_drivers(session_key: int = Query(...)):
             "country": d.get("country_code") or "Unknown",
             "number": str(number),
             "headshot_url": headshot,
-            "team_colour": "#" + d.get("team_colour") or "#555555"
+            "team_colour": "#" + (d.get("team_colour") or "555555"),
         }
 
     return list(drivers.values())

@@ -28,7 +28,7 @@ export default function DriverDetails() {
         axios.get(`http://localhost:8000/api/drivers?session_key=${sessionKey}`)
             .then(res => {
                 const found = res.data.find((d: Driver) => String(d.number) === String(number));
-                setDriver(found || null);
+                setDriver(found ?? null);
             })
             .finally(() => setLoading(false));
     }, [number, sessionKey]);

@@ -18,7 +18,7 @@ type Props = {
 };
 
 function parseLapTime(time: string | null): number | null {
-    if (!time || typeof time !== 'string') return null;
+    if (!time) return null;
 
     const parts = time.split(':');
     if (parts.length === 2) {
