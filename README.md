@@ -20,7 +20,6 @@ Usa datos oficiales de la [API OpenF1](https://openf1.org).
 
 * FastAPI
 * HTTPX
-* CORS Middleware
 * API externa: [OpenF1](https://openf1.org)
 
 ---
@@ -113,9 +112,8 @@ f1-webapp/
 
 ---
 
-## Licencia
+## Disclaimer
 
-Este proyecto es educativo. Los datos son públicos y obtenidos desde [OpenF1](https://openf1.org).
-No está afiliado a la FOM ni a la FIA.
+This is an educational project and is not associated in any way with the Formula 1 companies. F1, FORMULA ONE, FORMULA 1, FIA FORMULA ONE WORLD CHAMPIONSHIP, GRAND PRIX and related marks are trade marks of Formula One Licensing B.V.
 
 ---
