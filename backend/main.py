@@ -6,7 +6,7 @@ from fastapi.middleware.cors import CORSMiddleware
 app = FastAPI()
 
 app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_credentials=True, allow_methods=["*"],
-    allow_headers=["*"], )
+                   allow_headers=["*"], )
 
 BASE_URL = "https://api.openf1.org/v1"
 
@@ -37,8 +37,8 @@ async def get_sessions(year: int):
 
     data = response.json()
     return [{"session_key": s["session_key"],
-        "label": f"{s['country_name']} - {s['circuit_short_name']} - {s['session_name']}", "date": s["date_start"][:10]}
-        for s in data]
+             "label": f"{s['country_name']} - {s['circuit_short_name']} - {s['session_name']}",
+             "date": s["date_start"][:10]} for s in data]
 
 
 @app.get("/api/drivers")
@@ -66,8 +66,8 @@ async def get_drivers(session_key: int = Query(...)):
             headshot = generate_f1_headshot_url(name)
 
         drivers[key] = {"full_name": name, "team": d.get("team_name") or "Unknown",
-            "country": d.get("country_code") or "", "number": str(number), "headshot_url": headshot,
-            "team_colour": "#" + (d.get("team_colour") or "555555"), }
+                        "country": d.get("country_code") or "", "number": str(number), "headshot_url": headshot,
+                        "team_colour": "#" + (d.get("team_colour") or "555555"), }
 
     return list(drivers.values())
 
@@ -76,6 +76,6 @@ async def get_drivers(session_key: int = Query(...)):
 async def get_laps(driver_number: str, session_key: int):
     async with httpx.AsyncClient() as client:
         response = await client.get(f"{BASE_URL}/laps",
-            params={"driver_number": driver_number, "session_key": session_key})
+                                    params={"driver_number": driver_number, "session_key": session_key})
         response.raise_for_status()
         return response.json()

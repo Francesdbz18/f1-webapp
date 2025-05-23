@@ -28,13 +28,13 @@ export default function SeasonSelector({year, onChange}: Readonly<Props>) {
     if (loading) return <p className="text-center text-gray-600">Cargando sesiones...</p>;
 
     return (<div className="mb-6 text-center">
-            <select
-                onChange={(e) => onChange(Number(e.target.value))}
-                className="px-4 py-2 border rounded bg-white"
-            >
-                {sessions.map(s => (<option key={s.session_key} value={s.session_key}>
-                        {s.label} ({s.date})
-                    </option>))}
-            </select>
-        </div>);
+        <select
+            onChange={(e) => onChange(Number(e.target.value))}
+            className="px-4 py-2 border rounded bg-white"
+        >
+            {sessions.map(s => (<option key={s.session_key} value={s.session_key}>
+                {s.label} ({s.date})
+            </option>))}
+        </select>
+    </div>);
 }
