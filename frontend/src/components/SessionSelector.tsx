@@ -9,7 +9,7 @@ type Props = {
     year: number; onChange: (sessionKey: number) => void;
 };
 
-export default function SeasonSelector({year, onChange}: Readonly<Props>) {
+export default function SessionSelector({year, onChange}: Readonly<Props>) {
     const [sessions, setSessions] = useState<Session[]>([]);
     const [loading, setLoading] = useState(true);
 

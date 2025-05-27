@@ -85,7 +85,7 @@ f1-webapp/
 │       ├── main.tsx
 │       └── components/
 │           ├── YearSelector.tsx
-│           ├── SeasonSelector.tsx
+│           ├── SessionSelector.tsx
 │           ├── DriversList.tsx
 │           ├── DriverDetails.tsx
 │           ├── DriverStats.tsx
