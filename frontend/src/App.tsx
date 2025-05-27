@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
 import {BrowserRouter, Route, Routes} from 'react-router-dom';
-import SeasonSelector from './components/SeasonSelector';
+import SessionSelector from './components/SessionSelector';
 import YearSelector from './components/YearSelector';
 import DriversList from './components/DriversList';
 import DriverDetails from './components/DriverDetails';
@@ -17,7 +17,7 @@ export default function App() {
                     path="/"
                     element={<>
                         <YearSelector selectedYear={year} onChange={setYear}/>
-                        <SeasonSelector year={year} onChange={setSessionKey}/>
+                        <SessionSelector year={year} onChange={setSessionKey}/>
                         {sessionKey && <DriversList sessionKey={sessionKey}/>}
                     </>}
                 />
