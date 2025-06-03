@@ -78,7 +78,7 @@ f1-webapp/
 │   └── requirements.txt
 ├── frontend/
 │   ├── tsconfig.json
-│   ├── vite.config.ts
+│   ├── vite.config.mts
 │   ├── index.html
 │   └── src/
 │       ├── App.tsx
