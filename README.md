@@ -74,11 +74,26 @@ API disponible en: [http://localhost:8000](http://localhost:8000)
 ```
 f1-webapp/
 ├── backend/
-│   ├── main.py
-│   └── requirements.txt
+│   ├── app/
+│   │   ├── api/
+│   │   │   ├── endpoints/
+│   │   │   │   ├── drivers.py         
+│   │   │   │   ├── sessions.py        
+│   │   │   │   ├── laps.py
+│   │   ├── core/
+│   │   │   ├── config.py
+│   │   ├── models/
+│   │   │   ├── driver.py          
+│   │   │   ├── session.py
+│   │   ├── services/
+│   │   │   ├── drivers_service.py 
+│   │   │   ├── sessions_service.py
+│   │   ├── main.py
+│   ├── requirements.txt           
+│   └── README.md                  
 ├── frontend/
 │   ├── tsconfig.json
-│   ├── vite.config.ts
+│   ├── vite.config.mts
 │   ├── index.html
 │   └── src/
 │       ├── App.tsx
