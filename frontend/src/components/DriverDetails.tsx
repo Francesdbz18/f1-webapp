@@ -20,7 +20,7 @@ export default function DriverDetails() {
     useEffect(() => {
         if (!sessionKey || !number) return;
 
-        axios.get(`http://localhost:8000/api/drivers?session_key=${sessionKey}`)
+        axios.get(`${import.meta.env.VITE_API_BASE_URL}/api/drivers?session_key=${sessionKey}`)
             .then(res => {
                 const found = res.data.find((d: Driver) => String(d.number) === String(number));
                 setDriver(found ?? null);
@@ -54,9 +54,9 @@ export default function DriverDetails() {
             onError={(e) => (e.currentTarget.src = 'https://media.formula1.com/d_driver_fallback_image.png')}
             className="w-40 h-40 object-cover rounded-full mx-auto mb-4 border-4 border-white"
         />
-        <h2 className="text-center text-2xl font-bold">{driver.full_name}</h2>
-        <p className="text-center text-sm">{driver.country}</p>
-        <p className="text-center text-sm italic">{driver.team}</p>
+        <h2 className="text-center text-2xl font-bold text-shadow">{driver.full_name}</h2>
+        <p className="text-center text-sm text-shadow" >{driver.country}</p>
+        <p className="text-center text-sm italic text-shadow">{driver.team}</p>
 
         <DriverStats driverNumber={driver.number} sessionKey={sessionKey}/>
 

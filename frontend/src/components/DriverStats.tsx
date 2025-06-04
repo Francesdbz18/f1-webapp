@@ -17,7 +17,7 @@ export default function DriverStats({driverNumber, sessionKey}: Readonly<Props>)
 
     useEffect(() => {
         axios
-            .get(`http://localhost:8000/api/laps`, {
+            .get(`${import.meta.env.VITE_API_BASE_URL}/api/laps`, {
                 params: {driver_number: driverNumber, session_key: sessionKey},
             })
             .then((res) => {
@@ -58,41 +58,45 @@ export default function DriverStats({driverNumber, sessionKey}: Readonly<Props>)
             ⚠️ Este piloto no finalizó la carrera (DNF)
         </p>)}
 
-        <Line
-            data={{
-                labels: lapTimes.map((_, i) => `Vuelta ${i + 1}`), datasets: [{
-                    label: 'Duración por vuelta',
-                    data: lapTimes,
-                    borderColor: 'red',
-                    backgroundColor: 'rgba(255,99,132,0.2)',
-                    fill: true,
-                    tension: 0.3,
-                    pointRadius: lapTimes.map(t => t === bestLap ? 6 : 3),
-                    pointBackgroundColor: lapTimes.map(t => t === bestLap ? 'green' : 'red'),
-                },],
-            }}
-            options={{
-                responsive: true, plugins: {
-                    tooltip: {
-                        callbacks: {
-                            label: function (ctx) {
-                                return `⏱ ${formatSeconds(ctx.parsed.y)}`;
+        <div className="relative w-full h-[250px] sm:h-[350px] md:h-[450px]">
+            <Line
+                data={{
+                    labels: lapTimes.map((_, i) => `Vuelta ${i + 1}`), datasets: [{
+                        label: 'Duración por vuelta',
+                        data: lapTimes,
+                        borderColor: 'red',
+                        backgroundColor: 'rgba(255,99,132,0.2)',
+                        fill: true,
+                        tension: 0.3,
+                        pointRadius: lapTimes.map(t => t === bestLap ? 6 : 3),
+                        pointBackgroundColor: lapTimes.map(t => t === bestLap ? 'green' : 'red'),
+                    }],
+                }}
+                options={{
+                    responsive: true, maintainAspectRatio: false, // CLAVE para que la altura se respete
+                    plugins: {
+                        tooltip: {
+                            callbacks: {
+                                label: function (ctx) {
+                                    return `⏱ ${formatSeconds(ctx.parsed.y)}`;
+                                },
+                            },
+                        },
+                    }, scales: {
+                        y: {
+                            ticks: {
+                                callback: function (value: string | number) {
+                                    const num = typeof value === 'number' ? value : parseFloat(value);
+                                    return isNaN(num) ? '' : formatSeconds(num);
+                                },
+                            }, title: {
+                                display: false, text: 'Tiempo (mm:ss.xxx)',
                             },
                         },
                     },
-                }, scales: {
-                    y: {
-                        ticks: {
-                            callback: function (value: string | number) {
-                                const num = typeof value === 'number' ? value : parseFloat(value);
-                                return isNaN(num) ? '' : formatSeconds(num);
-                            },
-                        }, title: {
-                            display: true, text: 'Tiempo (mm:ss.xxx)',
-                        },
-                    },
-                },
-            }}
-        />
+                }}
+            />
+        </div>
+
     </div>);
 }

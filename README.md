@@ -1,4 +1,4 @@
-## F1 WebApp — Estadísticas y pilotos de Fórmula 1
+## F1 Driver Viewer — Estadísticas y pilotos de Fórmula 1
 
 Aplicación web para consultar información de pilotos de F1 por temporada y carrera, mostrando sus detalles, estadísticas y tiempos por vuelta.
 Usa datos oficiales de la [API OpenF1](https://openf1.org).
@@ -43,7 +43,7 @@ cd f1-webapp
 
 ---
 
-### 2. Frontend (React + Vite)
+### 2. Frontend (React + Vite, Node.js)
 
 ```bash
 cd frontend
@@ -122,8 +122,9 @@ f1-webapp/
 ## To-do / Mejoras futuras
 
 * Mostrar clasificación, posición final o abandonos
-* Añadir filtros por escudería
-* Historial de resultados por piloto
+* Añadir filtros por escudería y país
+* Mejorar UI con animaciones y transiciones.
+* Aplicar mejores prácticas de accesibilidad y usabilidad.
 
 ---
 

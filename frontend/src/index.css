@@ -1,3 +1,18 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.outlined-text {
+    color: white;
+    -webkit-text-stroke: 1px black;
+    paint-order: stroke fill;
+}
+
+@layer utilities {
+    .text-shadow {
+        text-shadow: 1px 1px 2px rgba(0,0,0,0.8);
+    }
+    .text-shadow-lg {
+        text-shadow: 2px 2px 4px rgba(0,0,0,0.9);
+    }
+}

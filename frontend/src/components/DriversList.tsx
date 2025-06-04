@@ -15,7 +15,7 @@ export default function DriversList({sessionKey}: Readonly<Props>) {
     const [drivers, setDrivers] = useState<Driver[]>([]);
 
     useEffect(() => {
-        axios.get(`http://localhost:8000/api/drivers?session_key=${sessionKey}`)
+        axios.get(`${import.meta.env.VITE_API_BASE_URL}/api/drivers?session_key=${sessionKey}`)
             .then(res => setDrivers(res.data));
     }, [sessionKey]);
 
@@ -23,7 +23,7 @@ export default function DriversList({sessionKey}: Readonly<Props>) {
         {drivers.map(driver => (<Link to={`/driver/${driver.number}?session_key=${sessionKey}`}>
             <div
                 style={{backgroundColor: driver.team_colour}}
-                className="p-6 rounded-xl shadow text-white hover:shadow-lg transition"
+                className="p-6 rounded-xl shadow text-white text-shadow hover:shadow-lg transition"
             >
                 <img
                     src={driver.headshot_url}

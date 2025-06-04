@@ -14,7 +14,7 @@ export default function SessionSelector({year, onChange}: Readonly<Props>) {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        axios.get(`http://localhost:8000/api/sessions?year=${year}`)
+        axios.get(`${import.meta.env.VITE_API_BASE_URL}/api/sessions?year=${year}`)
             .then(res => {
                 const sorted = res.data.sort((a: Session, b: Session) => new Date(a.date).getTime() - new Date(b.date).getTime());
                 setSessions(sorted);
