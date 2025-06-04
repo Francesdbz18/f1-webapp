@@ -1,5 +1,5 @@
 import httpx
-from backend.app.models.session import Session
+from app.models.session import Session
 
 BASE_URL = "https://api.openf1.org/v1"
 

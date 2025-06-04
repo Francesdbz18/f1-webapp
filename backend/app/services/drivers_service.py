@@ -1,6 +1,6 @@
 import httpx
 from unidecode import unidecode
-from backend.app.models.driver import Driver
+from app.models.driver import Driver
 
 BASE_URL = "https://api.openf1.org/v1"
 

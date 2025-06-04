@@ -1,5 +1,5 @@
 from fastapi import APIRouter, Query
-from backend.app.services.drivers_service import fetch_drivers
+from app.services.drivers_service import fetch_drivers
 router = APIRouter()
 
 @router.get("/drivers")

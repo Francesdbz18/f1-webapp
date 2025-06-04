@@ -1,5 +1,5 @@
 from fastapi import APIRouter, Query
-from backend.app.services.sessions_service import fetch_sessions
+from app.services.sessions_service import fetch_sessions
 
 
 router = APIRouter()

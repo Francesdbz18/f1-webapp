@@ -1,8 +1,8 @@
 from fastapi import FastAPI
-from backend.app.core.config import configure_cors
-from backend.app.api.endpoints.drivers import router as drivers_router
-from backend.app.api.endpoints.sessions import router as sessions_router
-from backend.app.api.endpoints.laps import router as laps_router
+from app.core.config import configure_cors
+from app.api.endpoints.drivers import router as drivers_router
+from app.api.endpoints.sessions import router as sessions_router
+from app.api.endpoints.laps import router as laps_router
 
 app = FastAPI()
 
