@@ -9,7 +9,7 @@ def generate_f1_headshot_url(full_name: str) -> str:
     parts = name.strip().split()
 
     if len(parts) < 2:
-        return "https://media.formula1.com/d_driver_fallback_image.png/content/dam/fom-website/drivers"
+        return "https://media.formula1.com/d_driver_fallback_image.png/content/"
 
     first = parts[0]
     last = parts[-1]

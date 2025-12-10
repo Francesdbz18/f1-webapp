@@ -27,6 +27,7 @@ export default function DriversList({sessionKey}: Readonly<Props>) {
             >
                 <img
                     src={driver.headshot_url}
+                    onError={(e) => (e.currentTarget.src = 'https://media.formula1.com/d_driver_fallback_image.png/content/')}
                     alt={driver.full_name}
                     className="w-24 h-24 rounded-full mx-auto mb-4 object-cover"
                 />

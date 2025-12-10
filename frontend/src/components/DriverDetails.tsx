@@ -51,7 +51,7 @@ export default function DriverDetails() {
         <img
             src={driver.headshot_url}
             alt={driver.full_name}
-            onError={(e) => (e.currentTarget.src = 'https://media.formula1.com/d_driver_fallback_image.png')}
+            onError={(e) => (e.currentTarget.src = 'https://media.formula1.com/d_driver_fallback_image.png/content/')}
             className="w-40 h-40 object-cover rounded-full mx-auto mb-4 border-4 border-white"
         />
         <h2 className="text-center text-2xl font-bold text-shadow">{driver.full_name}</h2>

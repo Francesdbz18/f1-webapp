@@ -5,7 +5,7 @@ BASE_URL = "https://api.openf1.org/v1"
 
 async def fetch_sessions(year: int):
     async with httpx.AsyncClient() as client:
-        response = await client.get(f"{BASE_URL}/sessions", params={"year": year, "session_type": "Race"})
+        response = await client.get(f"{BASE_URL}/sessions", params={"year": year})
         response.raise_for_status()
 
     data = response.json()
